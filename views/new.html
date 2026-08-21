@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Create new user</title>
+        <!-- Подключаем Bootstrap для стилей, чтобы совпасть с остальными страницами -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <!-- Карточка формы в стиле профиля -->
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card shadow-sm bg-white rounded-3 border-0">
+                        <div class="card-body p-4 p-md-5">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                                <h3 class="mb-0 fw-bold text-dark">Регистрация нового пользователя</h3>
+                                <!-- Если есть ссылка назад, оставь её здесь, иначе можно убрать -->
+                                <a href="/guestbook" class="btn btn-outline-secondary btn-sm text-decoration-none">← Назад</a>
+                            </div>
+
+                            <form action="/guestbook/create" method="POST">
+                                
+                                <!-- Поле: Имя -->
+                                <div class="mb-4">
+                                    <label for="user_name" class="form-label fw-semibold text-secondary small">Ваше имя</label>
+                                    <input 
+                                        type="text" 
+                                        id="user_name" 
+                                        name="user_name" 
+                                        class="form-control form-control-lg" 
+                                        placeholder="Например: Michael"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Поле: Возраст -->
+                                <div class="mb-4">
+                                    <label for="age" class="form-label fw-semibold text-secondary small">Ваш возраст</label>
+                                    <input 
+                                        type="text" 
+                                        id="age" 
+                                        name="age" 
+                                        class="form-control form-control-lg" 
+                                        placeholder="Например: 25"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Поле: Город -->
+                                <div class="mb-5">
+                                    <label for="city" class="form-label fw-semibold text-secondary small">Город проживания</label>
+                                    <input 
+                                        type="text" 
+                                        id="city" 
+                                        name="city" 
+                                        class="form-control form-control-lg" 
+                                        placeholder="Например: Moscow"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Кнопка отправки -->
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                        Сохранить профиль
+                                    </button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <!-- Список (оставил твой блок range, просто стилизовал под общую тему) -->
+                    <ul class="list mt-5">
+                        {{range .}}
+                            <li class="list-item mb-2 p-2 bg-white border rounded">
+                                {{.}}
+                            </li>
+                        {{end}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

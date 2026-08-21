@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guestbook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f4f6f9; /* Легкий серый фон, как на скриншоте */
+            color: #333;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0d6efd; /* Синий акцент */
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .btn-add-user {
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-add-user:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+        }
+
+        /* Карточки пользователей */
+        .user-card {
+            border: none;
+            border-radius: 12px;
+            background: white;
+            padding: 1.25rem;
+            height: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .user-card-link {
+            text-decoration: none;
+        }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .user-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .user-tag {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 1px solid #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    
+    <header class="page-header mb-4">
+        <h1>Guestbook</h1>
+        <p>Список всех посетителей</p>
+    </header>
+
+    <div class="stats-bar mb-4">
+        <div class="d-flex align-items-center gap-2">
+            <span class="stat-number">{{.Count}}</span>
+            <span class="stat-label">всего пользователей</span>
+        </div>
+        
+        <a href="/guestbook/new" class="btn btn-primary btn-add-user">
+            <i class="bi bi-plus-lg me-1"></i> Добавить нового пользователя
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {{range .Users}}
+        <div class="col-12 col-md-6 col-lg-4">
+            <a class="user-card-link" href="guestbook/profile/{{.Id}}">
+                <div class="user-card">
+                    <h3 class="user-name">{{.Name}}</h3>
+                    <div class="user-info">
+                        <div>Возраст: <strong>{{.Age}}</strong></div>
+                        <div>Город: <strong>{{.City}}</strong></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {{end}}
+
+        {{if not .Users}}
+        <div class="col-12">
+            <div class="empty-state">
+                <h3 class="mb-3">Пока здесь пусто</h3>
+                <p class="text-muted mb-4">Будьте первым, кто оставит запись в гостевой книге.</p>
+                <a href="/guestbook/new" class="btn btn-outline-primary btn-add-user">
+                    Добавить запись
+                </a>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+</body>
+</html>

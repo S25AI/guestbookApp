@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ProfilePage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <header class="mb-5">
+            <h1>Страница пользователя</h1>
+            <p class="lead">{{.Name}}, {{.Age}} лет, г. {{.City}}</p>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Список объявлений</h3>
+                <!-- Ссылка на создание объявления -->
+                <a href="/guestbook/items/new?userId={{.Id}}" class="btn btn-primary">
+                    ➕ Создать объявление
+                </a>
+            </div>
+        </header>
+
+        <div class="row g-4">
+            {{range .Items}}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{.Title}}</h5>
+                        <p class="card-text text-muted small">
+                            {{.Description | printf "%.80s"}}{{if gt (len .Description) 80}}...{{end}}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold text-primary fs-5">{{.Price}} ₽</span>
+                            {{if eq .Status "active"}}
+                                <span class="badge bg-success">Активно</span>
+                            {{else if eq .Status "draft"}}
+                                <span class="badge bg-warning text-dark">Черновик</span>
+                            {{else}}
+                                <span class="badge bg-danger">Архив</span>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+
+            {{if not .Items}}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">У пользователя пока нет объявлений.</p>
+                </div>
+            {{end}}
+        </div>
+    </div>
+</body>
+</html>

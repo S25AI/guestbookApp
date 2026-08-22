@@ -12,19 +12,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: DEBUG Check secret length
-        run: |
-          echo "Secret length: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | wc -c) chars"
-          echo "First line: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | head -n 1)"
-          echo "Last line: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | tail -n 1)"
-
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           
-          chmod 600 ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_rsa
+       
+          echo "--- Validating Key Structure ---"
+          if ssh-keygen -l -f ~/.ssh/id_rsa; then
+            echo "SUCCESS: Key is valid."
+          else
+            echo "ERROR: Key format is invalid."
+            exit 1
+          fi
           
           ssh-keyscan -H \${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
@@ -32,17 +34,11 @@ jobs:
           # Создаем конфиг, чтобы явно указать путь к ключу и тип
           cat > ~/.ssh/config << EOF
           Host *
-            IdentityFile ~/.ssh/id_ed25519
+            IdentityFile ~/.ssh/id_rsa
             IdentitiesOnly yes
             StrictHostKeyChecking yes
           EOF
           chmod 600 ~/.ssh/config
-
-          # Проверка валидности ключа
-          echo "--- Права на файлы ---"
-          ls -la ~/.ssh/
-          echo "--- Проверяем валидность ключа ---"
-          ssh-keygen -l -f ~/.ssh/id_ed25519
 
       - name: Deploy to Server
         run: |

@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: DEBUG: Check secret length
+      - name: DEBUG Check secret length
         run: |
           echo "Secret length: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | wc -c) chars"
           echo "First line: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | head -n 1)"

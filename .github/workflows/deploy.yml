@@ -21,6 +21,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           
           chmod 600 ~/.ssh/id_ed25519
@@ -37,7 +38,9 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
-          # Проверка валидности ключа локально (выведет OK или ошибку)
+          # Проверка валидности ключа
+          echo "--- Права на файлы ---"
+          ls -la ~/.ssh/
           echo "--- Проверяем валидность ключа ---"
           ssh-keygen -l -f ~/.ssh/id_ed25519
 

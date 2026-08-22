@@ -32,5 +32,5 @@ jobs:
             fi
 
             echo "Запуск docker compose..."
-            docker compose up -d --build --remove-orphans
+            docker-compose up -d --build --remove-orphans
           EOF

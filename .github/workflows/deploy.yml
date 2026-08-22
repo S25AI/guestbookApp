@@ -12,10 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: DEBUG: Check secret length
+        run: |
+          echo "Secret length: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | wc -c) chars"
+          echo "First line: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | head -n 1)"
+          echo "Last line: $(echo '${{ secrets.SSH_PRIVATE_KEY }}' | tail -n 1)"
+
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY_FIX  }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY  }}" > ~/.ssh/id_ed25519
           
           chmod 600 ~/.ssh/id_ed25519
           

@@ -15,30 +15,34 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          # Отключаем проверку хоста (чтобы не спрашивал yes/no при первом подключении)
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
-          echo "UserKnownHostsFile /dev/null" >> ~/.ssh/config
+          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          
+          chmod 600 ~/.ssh/id_ed25519
+          
+          ssh-keyscan -H \${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          
+          # Создаем конфиг, чтобы явно указать путь к ключу и тип
+          cat > ~/.ssh/config << EOF
+          Host *
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          EOF
+          chmod 600 ~/.ssh/config
 
       - name: Deploy to Server
         run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
-            # 1. Заходим в папку проекта
+          ssh -v ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
             cd /home/deploy/my-app
             
-            # 2. Клонируем проект (или обновляем, если уже есть)
-            # Если папка пустая, git clone сработает. Если есть .git - делаем pull.
             if [ ! -d ".git" ]; then
               echo "Клонируем репозиторий..."
-              # ⚠️ ЗАМЕНИ ССЫЛКУ НИЖЕ на свою! (SSH ссылка на твой репозиторий)
               git clone git@github.com:S25AI/guestbookApp.git .
             else
               echo "Обновляем существующий репозиторий..."
               git pull origin main
             fi
 
-            # 3. Перезапускаем контейнеры
-            # Теперь docker compose увидит твой docker-compose.yml внутри папки
             docker compose up -d --build --remove-orphans
           EOF

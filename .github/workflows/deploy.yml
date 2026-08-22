@@ -15,7 +15,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "\${{ secrets.SSH_PRIVATE_KEY_FIX  }}" > ~/.ssh/id_ed25519
           
           chmod 600 ~/.ssh/id_ed25519
           
@@ -31,8 +31,12 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
+          # Проверка валидности ключа локально (выведет OK или ошибку)
+          ssh-keygen -l -f ~/.ssh/id_ed25519
+
       - name: Deploy to Server
         run: |
+          echo "=== Подключение к серверу ==="
           ssh -v ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} << 'EOF'
             cd /home/deploy/my-app
             
@@ -44,5 +48,6 @@ jobs:
               git pull origin main
             fi
 
+            echo "Запуск docker compose..."
             docker compose up -d --build --remove-orphans
           EOF
